@@ -1,38 +1,45 @@
-# Junk Journal Copilot — MVP (Beta-ready core)
+# Junk Journal Copilot — Clean MVP
 
-This is a working end-to-end MVP:
+A clean, Codespaces-friendly MVP that avoids config bootstrapping pitfalls.
+
+## MVP capabilities
 - Library → Journals → Entries
-- Upload media (photos)
-- Preview bundle (deterministic templates + server-side image enhancement)
-- Approve / Regenerate flow (approve persists an EntryVersion)
-- Book view (flipbook) for approved entries
-- Share links (public / invite) for approved entries only
-- No auth UI, but **user data isolation** via anonymous cookie (`jj_token`) set by the API
+- Create / delete journals
+- Create entries
+- Upload photos to an entry
+- Server-side "beautify" (rotate/resize/trim + mild enhance) using **sharp**
+- Preview: 3 page layout options + suggested title/description
+- Approve flow: **Approve / Edit / Regenerate** (Edit is manual via fields)
+- Flipbook "Book View" (approved entries)
+- Share public link (approved entries only)
+- **No auth UI**, but per-user data isolation via anonymous cookie (`jj_token`)
 
-## Stack
-- Web: Next.js 14 (App Router) + Tailwind + react-pageflip
-- API: Express + TypeScript + Prisma + Postgres
-- Image: Sharp (rotate/resize/enhance/trim)
-- Storage: local filesystem under `apps/api/storage/`
+## Tech
+- Web: Next.js App Router + Tailwind + react-pageflip
+- API: Express + TypeScript + tsx + multer + sharp
+- Storage: JSON on disk + files under `apps/api/storage/` (easy to swap to DB later)
 
-## Run locally
-Prereqs: Node 20+, Docker
+## Run (Codespaces)
+Open two terminals.
 
+### Terminal 1 (API)
 ```bash
-npm install
-docker compose up -d
-
 cd apps/api
 cp .env.example .env
-npm run prisma:migrate
-npm run prisma:seed
+npm install
 npm run dev
 ```
 
-New terminal:
+### Terminal 2 (Web)
 ```bash
 cd apps/web
+cp .env.example .env.local
+npm install
 npm run dev
 ```
 
-Open http://localhost:3000
+Open port **3000**.
+
+## Notes
+- API serves static media at `/storage/...`
+- Web uses `NEXT_PUBLIC_API_BASE_URL` (defaults to `http://localhost:3001`).

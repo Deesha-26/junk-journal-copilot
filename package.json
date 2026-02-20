@@ -1,0 +1,7 @@
+{
+  "name": "junk-journal-copilot-clean-mvp",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ]
+}
