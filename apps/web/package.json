@@ -1,0 +1,7 @@
+{
+  "name": "jj-web",
+  "private": true,
+  "scripts": {
+    "dev": "next dev"
+  }
+}
