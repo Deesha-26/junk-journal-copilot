@@ -1,0 +1,108 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider="postgresql" url=env("DATABASE_URL") }
+
+model Owner {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  noTraining Boolean  @default(true)
+  sessions   OwnerSession[]
+  journals   Journal[]
+  entries    Entry[]
+  media      MediaAsset[]
+  versions   EntryVersion[]
+  shares     Share[]
+}
+
+model OwnerSession {
+  id         String   @id @default(uuid())
+  ownerId    String
+  owner      Owner    @relation(fields:[ownerId], references:[id], onDelete: Cascade)
+  tokenHash  String   @unique
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  expiresAt  DateTime
+  revokedAt  DateTime?
+}
+
+model Journal {
+  id           String   @id @default(uuid())
+  ownerId      String
+  owner        Owner    @relation(fields:[ownerId], references:[id], onDelete: Cascade)
+  title        String
+  themeFamily  String
+  pageSize     String
+  clutterLevel String   @default("medium")
+  agingLevel   String   @default("soft")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  archivedAt   DateTime?
+  entries      Entry[]
+  shares       Share[]
+}
+
+model Entry {
+  id               String   @id @default(uuid())
+  ownerId          String
+  owner            Owner    @relation(fields:[ownerId], references:[id], onDelete: Cascade)
+  journalId        String
+  journal          Journal  @relation(fields:[journalId], references:[id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  status           String   @default("draft")
+  titleFinal       String?
+  descFinal        String?
+  currentVersionId String?
+  media            MediaAsset[]
+  versions         EntryVersion[]
+}
+
+model MediaAsset {
+  id           String   @id @default(uuid())
+  ownerId      String
+  owner        Owner    @relation(fields:[ownerId], references:[id], onDelete: Cascade)
+  entryId      String
+  entry        Entry    @relation(fields:[entryId], references:[id], onDelete: Cascade)
+  originalUrl  String
+  derivedUrl   String?
+  kind         String   @default("unknown")
+  exifStripped Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}
+
+model EntryVersion {
+  id                String   @id @default(uuid())
+  ownerId           String
+  owner             Owner    @relation(fields:[ownerId], references:[id], onDelete: Cascade)
+  entryId           String
+  entry             Entry    @relation(fields:[entryId], references:[id], onDelete: Cascade)
+  versionNum        Int
+  templateId        String
+  decisionsJson     Json
+  renderManifestUrl String
+  pageRenders       Json
+  createdAt         DateTime @default(now())
+  approvedAt        DateTime?
+}
+
+model Share {
+  id        String   @id @default(uuid())
+  ownerId   String
+  owner     Owner    @relation(fields:[ownerId], references:[id], onDelete: Cascade)
+  journalId String
+  journal   Journal  @relation(fields:[journalId], references:[id], onDelete: Cascade)
+  mode      String
+  slug      String   @unique
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  revokedAt DateTime?
+  invites   ShareInvite[]
+}
+
+model ShareInvite {
+  id         String   @id @default(uuid())
+  shareId    String
+  share      Share    @relation(fields:[shareId], references:[id], onDelete: Cascade)
+  email      String?
+  inviteSlug String   @unique
+  createdAt  DateTime @default(now())
+  revokedAt  DateTime?
+}

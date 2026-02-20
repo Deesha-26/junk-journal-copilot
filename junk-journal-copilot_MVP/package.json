@@ -1,0 +1,12 @@
+{
+  "name": "junk-journal-copilot",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm -w @jj/api run dev & npm -w @jj/web run dev",
+    "lint": "npm -w @jj/api run lint && npm -w @jj/web run lint"
+  }
+}
