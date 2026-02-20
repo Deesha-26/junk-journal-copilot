@@ -1,7 +1,0 @@
-{
-  "name": "jj-api",
-  "private": true,
-  "scripts": {
-    "dev": "node server.js"
-  }
-}
