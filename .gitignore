@@ -1,6 +1,0 @@
-node_modules
-.next
-dist
-apps/api/storage
-apps/api/.env
-.DS_Store
