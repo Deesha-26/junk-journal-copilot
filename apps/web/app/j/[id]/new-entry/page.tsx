@@ -10,7 +10,18 @@ export default function NewEntryPage({ params }: { params: { id: string } }) {
     setBusy(true);
     setErr(null);
     try {
-      await apiGet("/api/bootstrap");
+      async function create() {
+  setBusy(true);
+  setErr(null);
+  try {
+    const { entry } = await apiPost<any>("/api/entries", { journalId: params.id });
+    window.location.href = `/e/${entry.id}`;
+  } catch (e: any) {
+    setErr(e?.message ?? "Failed to create entry");
+  } finally {
+    setBusy(false);
+  }
+}
       const { entry } = await apiPost<any>("/api/entries", { journalId: params.id });
 window.location.href = `/e/${entry.id}`;    } catch (e: any) {
       setErr(e?.message ?? "Failed to create entry");
