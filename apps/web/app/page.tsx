@@ -1,7 +1,7 @@
 import { apiGet } from "./lib/api";
 
 
-type Journal = { id: string; title: string; themeFamily: string; pageSize: string };
+type Journal = { id: string; name: string; createdAt: string };
 
 export default async function HomePage() {
   await apiGet("/api/bootstrap");
@@ -29,8 +29,8 @@ export default async function HomePage() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-lg font-semibold">{j.title}</div>
-                  <div className="text-sm text-black/60">{j.themeFamily} • {j.pageSize}</div>
+                  <div className="text-lg font-semibold">{j.name}</div>
+                  <div className="text-sm text-black/60">{j.createdAt}</div>
                 </div>
                 <div className="text-xs text-black/50 group-hover:text-black/70">Open →</div>
               </div>
