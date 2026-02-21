@@ -5,8 +5,7 @@ type Journal = { id: string; name: string; createdAt: string };
 
 export default async function HomePage() {
   await apiGet("/api/bootstrap");
-  const { journals } = await apiGet<{ journals: Journal[] }>("/api/journals");
-
+  const { journals = [] } = await apiGet<{ journals: Journal[] }>("/api/journals");
   return (
     <div className="space-y-6">
       <div>
