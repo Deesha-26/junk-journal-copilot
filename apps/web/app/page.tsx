@@ -39,4 +39,16 @@ export default function HomePage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Your Library</h1>
-        <p className="text-black/60">Create journals, add entries, upload photos, pre
+        <p className="text-black/60">Create journals, add entries, upload photos, preview options, then approve pages.</p>
+      </div>
+      {journals.length === 0 ? (
+        <div className="p-10 rounded-2xl border border-black/10 bg-white/40">
+          <p className="font-medium">No journals yet.</p>
+          <p className="text-black/60 mt-1">Click "New Journal".</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{items}</div>
+      )}
+    </div>
+  );
+}
