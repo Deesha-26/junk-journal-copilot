@@ -1,5 +1,6 @@
 import { apiGet } from "./lib/api";
 
+
 type Journal = { id: string; title: string; themeFamily: string; pageSize: string };
 
 export default async function HomePage() {
