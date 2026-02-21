@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { apiGet, apiPost } from "../../../lib/api";
+import { apiPost } from "../../../lib/api";
 
 export default function NewEntryPage({ params }: { params: { id: string } }) {
   const [busy, setBusy] = useState(false);
@@ -10,20 +10,9 @@ export default function NewEntryPage({ params }: { params: { id: string } }) {
     setBusy(true);
     setErr(null);
     try {
-      async function create() {
-  setBusy(true);
-  setErr(null);
-  try {
-    const result = await apiPost<any>("/api/entries", { journalId: params.id });
-console.log("result", result);
-window.location.href = `/e/${result?.entry?.id ?? result?.id}`;  } catch (e: any) {
-    setErr(e?.message ?? "Failed to create entry");
-  } finally {
-    setBusy(false);
-  }
-}
-      const { entry } = await apiPost<any>("/api/entries", { journalId: params.id });
-window.location.href = `/e/${entry.id}`;    } catch (e: any) {
+      const result = await apiPost<any>("/api/entries", { journalId: params.id });
+      window.location.href = `/e/${result?.entry?.id ?? result?.id}`;
+    } catch (e: any) {
       setErr(e?.message ?? "Failed to create entry");
     } finally {
       setBusy(false);
