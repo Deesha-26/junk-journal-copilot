@@ -1,11 +1,22 @@
+"use client";
+import { useEffect, useState } from "react";
 import { apiGet } from "./lib/api";
-
 
 type Journal = { id: string; name: string; createdAt: string };
 
-export default async function HomePage() {
-  await apiGet("/api/bootstrap");
-  const { journals = [] } = await apiGet<{ journals: Journal[] }>("/api/journals");
+export default function HomePage() {
+  const [journals, setJournals] = useState<Journal[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiGet("/api/bootstrap")
+      .then(() => apiGet<{ journals: Journal[] }>("/api/journals"))
+      .then((data) => setJournals(data.journals ?? []))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className="p-10 text-black/60">Loading...</div>;
+
   return (
     <div className="space-y-6">
       <div>
@@ -16,11 +27,11 @@ export default async function HomePage() {
       {journals.length === 0 ? (
         <div className="p-10 rounded-2xl border border-black/10 bg-white/40">
           <p className="font-medium">No journals yet.</p>
-          <p className="text-black/60 mt-1">Click “New Journal”.</p>
+          <p className="text-black/60 mt-1">Click "New Journal".</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {journals.map((j) => (
+          {journals.map((j: Journal) => (
             <a
               key={j.id}
               href={`/j/${j.id}`}
