@@ -17,9 +17,8 @@ export default function NewJournalPage() {
     setErr(null);
     try {
       await apiGet("/api/bootstrap");
-      const j = await apiPost<any>("/api/journals", { title, pageSize, themeFamily });
-      window.location.href = `/j/${j.id}`;
-    } catch (e: any) {
+      const { journal } = await apiPost<any>("/api/journals", { name: title, pageSize, themeFamily });
+window.location.href = `/j/${journal.id}`;    } catch (e: any) {
       setErr(e?.message ?? "Failed to create journal");
     } finally {
       setBusy(false);
