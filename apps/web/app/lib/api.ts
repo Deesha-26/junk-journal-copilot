@@ -1,5 +1,10 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
+const API_BASE =
+  process.env.API_URL ||
+  process.env.NEXT_PUBLIC_API_URL;
 
+if (!API_BASE) {
+  throw new Error("API_URL is not defined in environment variables");
+}
 async function assertOk(res: Response, label: string) {
   if (!res.ok) {
     const text = await res.text().catch(() => "");
