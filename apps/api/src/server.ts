@@ -218,7 +218,7 @@ function setOwnerCookie(res: Response, ownerId: string) {
   // secure cookies in prod (https). On Render behind proxy, req.secure may be false unless trust proxy is set (it is).
   res.cookie(ENV.COOKIE_NAME, ownerId, {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     secure: isProd,
     path: "/",
     maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
