@@ -1,51 +1,48 @@
-'use client';
+"use client";
 
-import dynamic from 'next/dynamic';
-import React, { useMemo } from 'react';
+import dynamic from "next/dynamic";
+import React, { useMemo } from "react";
 
-// IMPORTANT: react-pageflip uses the DOM, so load it client-only
-const HTMLFlipBook = dynamic(() => import('react-pageflip'), { ssr: false }) as any;
+// ✅ IMPORTANT: return the *default export component* and hard-cast to any
+const HTMLFlipBook = dynamic(
+  async () => {
+    const mod = await import("react-pageflip");
+    return (mod as any).default; // <-- this is the actual React component
+  },
+  { ssr: false }
+) as unknown as React.ComponentType<any>;
 
 type Page = {
   id: string;
-  html?: string;     // if you store rich HTML
-  text?: string;     // if you store plain text
-  imageUrl?: string; // if you store an image per page
+  html?: string;
+  text?: string;
+  imageUrl?: string;
 };
 
-function FlipPage({
-  children,
-  className = '',
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  // react-pageflip requires each page to be a component that forwards a ref
-  return (
-    <div className={`bg-white ${className}`}>
-      {children}
-    </div>
-  );
-}
+// ✅ react-pageflip requires each child page to be a component that forwards a ref
+const FlipPage = React.forwardRef<HTMLDivElement, { children: React.ReactNode; className?: string }>(
+  function FlipPage({ children, className = "" }, ref) {
+    return (
+      <div ref={ref} className={`bg-white ${className}`}>
+        {children}
+      </div>
+    );
+  }
+);
 
-export default function BookPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function BookPage({ params }: { params: { id: string } }) {
   const journalId = params.id;
 
   // TODO: replace this with your real fetched data
   const pages: Page[] = useMemo(
     () => [
-      { id: 'cover', text: 'Cover' },
-      { id: 'p1', text: 'Page 1' },
-      { id: 'p2', text: 'Page 2' },
+      { id: "cover", text: "Cover" },
+      { id: "p1", text: "Page 1" },
+      { id: "p2", text: "Page 2" },
     ],
     []
   );
 
-  // ✅ KEY FIX: children MUST be a flat ReactElement[] (no nested arrays)
   const pageElements = useMemo(() => {
     return pages.map((p) => (
       <FlipPage key={p.id} className="p-6">
@@ -55,12 +52,9 @@ export default function BookPage({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={p.imageUrl} alt="" className="w-full h-auto rounded" />
         ) : p.html ? (
-          <div
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: p.html }}
-          />
+          <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: p.html }} />
         ) : (
-          <div className="text-base text-black">{p.text ?? ''}</div>
+          <div className="text-base text-black">{p.text ?? ""}</div>
         )}
       </FlipPage>
     ));
