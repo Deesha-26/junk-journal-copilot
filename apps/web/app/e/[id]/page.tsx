@@ -21,7 +21,7 @@ export default function EntryPage({ params }: { params: { id: string } }) {
   const [err, setErr] = useState<string | null>(null);
 
   async function loadPreview() {
-    const p = await apiGet<Preview>(`/api/preview/${entryId}`);
+    const p = await apiPost<Preview>(`/api/entries/${entryId}/preview`, {});
     setPreview(p);
     setChosen(p.pageOptions[0]?.id ?? "optA");
     setTitle(p.suggestedTitle ?? "");
@@ -38,7 +38,7 @@ export default function EntryPage({ params }: { params: { id: string } }) {
     setUploading(true);
     setErr(null);
     try {
-      await apiUpload(`/api/upload/${entryId}`, files);
+      await apiUpload(`/api/entries/${entryId}/media`, files);
       await loadPreview();
       setFiles([]);
     } catch (e: any) {
@@ -51,11 +51,7 @@ export default function EntryPage({ params }: { params: { id: string } }) {
   async function approve() {
     setErr(null);
     try {
-      await apiPost(`/api/approve/${entryId}`, {
-        chosenOptionId: chosen,
-        titleFinal: title,
-        descFinal: desc,
-      });
+      await apiPost(`/api/entries/${entryId}/approve`, { template: chosen, title, description: desc });
       alert("Approved! Now this entry will appear in Book View.");
     } catch (e: any) {
       setErr(e?.message ?? "Approve failed");
