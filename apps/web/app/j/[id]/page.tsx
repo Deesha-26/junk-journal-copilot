@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import React, { useMemo } from 'react';
 
 // IMPORTANT: react-pageflip uses the DOM, so load it client-only
-const HTMLFlipBook = dynamic(() => import('react-pageflip'), { ssr: false });
+const HTMLFlipBook = dynamic(() => import('react-pageflip'), { ssr: false }) as any;
 
 type Page = {
   id: string;
